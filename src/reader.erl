@@ -4,8 +4,9 @@
 -include("../include/common.hrl").
 -include("../include/words.hrl").
 
+
+-define(READ_TIMED, 100).
 -define(READER_TIMED, 5000).
--define(READ_TIMED, 5000).
 
 
 start() ->
@@ -17,10 +18,7 @@ start() ->
 read({Filename_1, Filename_2}) ->
     case{file:open(Filename_1, read), file:open(Filename_2, read)} of
         {{ok, Io_device_1}, {ok, Io_device_2}} ->
-
-
                 process_each_line({{Io_device_1, Io_device_2}, {1, []}});
-
         {{error, Reason}, _ } ->
             io:format("file 1 (~s) error:~n|~s|~n", [Filename_1, Reason]);
         {_, {error, Reason}} ->
@@ -62,7 +60,7 @@ process_each_line({{Io_device_1, Io_device_2}, {Counter, Buffer}}) ->
             receive
                 next ->
                     process_each_line({{Io_device_1, Io_device_2}, {Counter + 1, []}})
-            after 100 ->
+            after ?READ_TIMED ->
                     %?LOG("reader next timed out ... continue ~n", []),
                     process_each_line({{Io_device_1, Io_device_2}, {Counter + 1, []}})
             end

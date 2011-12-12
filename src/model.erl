@@ -2,18 +2,12 @@
 -compile(export_all).
 
 -include("../include/common.hrl").
--include("../include/db.hrl").
 -include("../include/words.hrl").
 
-
 -define(NORMA,       0.5).
-
 -define(DEFAULT,     0.0).
-
-
-
--define(ITER_STEPS,       10). % 5%
--define(SAVE_LIMIT,       0.05). % 5%
+-define(ITER_STEPS,       10).      % 5
+-define(SAVE_LIMIT,       0.05).    % 5%
 
 
 train_s(Pairs) ->
@@ -24,36 +18,24 @@ train_p(Pairs) ->
     exit(self(), kill).
 
 train(Pairs)->
-    mem_table:set_stored_table(t_ef, [{database, ?TOTAL_DB}]),
+    mem_table:set_table(t_ef),
     mem_table:set_table(s_total_e),
     mem_table:set_table(total_f),
     mem_table:set_table(count_ef),
-
-    %mem_table:restore(t_ef, Pairs),
-
-    ?LOG("(+)train", []),
+    mem_table:restore(t_ef, Pairs),
 
     train(Pairs, ?ITER_STEPS),
-
-    ?LOG("(-)train", []),
-
     %% Full = ets:match(mem_table:get_table(t_ef), '$1'),
     Croped = ets:select(mem_table:get_table(t_ef), [{{'$1','$2'},[{'>','$2',?SAVE_LIMIT}],['$$']}]),
 
-    ?LOG("(-)croped", []),
+    mem_table:save_to_store(t_ef, Croped),
 
-    %%?LOG("Full = ~p", [length(Full)]),
-    %%?LOG("Croped = ~p", [length(Croped)]),
-
-    % mem_table:save_to_store(t_ef, Croped),
-
-    %%?LOG("Croped = ~p", [Croped]),
-
+    %?LOG("Croped = ~p", [Croped]),
     mem_table:drop_table(t_ef),
     mem_table:drop_table(s_total_e),
     mem_table:drop_table(total_f),
     mem_table:drop_table(count_ef),
-    ?LOG("~n model stoped~n", []),
+    ?LOG("~n model stoped ~n", []),
     ok.
 
 train(_Pairs, 0) -> ok;

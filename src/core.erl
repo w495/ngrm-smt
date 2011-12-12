@@ -10,9 +10,7 @@
 
 train({Filename_1, Filename_2}) ->
 
-    DataBase = spawn(db, start, []),
-
-    Worker = spawn(worker, start, []),
+    Worker = spawn(reader_worker, start, []),
     Reader = spawn(reader, start, []),
 
     Reader ! {read, {Filename_1, Filename_2}},
@@ -22,12 +20,13 @@ train({Filename_1, Filename_2}) ->
 
     exit(Reader, normal),
     exit(Worker, normal),
-    exit(DataBase, normal),
+
     ok.
 
 
-reconbain()
+decode() ->
 
+    ok.
 
 
 

@@ -6,9 +6,6 @@
 -include("../include/words.hrl").
 
 
-start() ->
-    {ok, Db} = eredis:start_link([{database, ?TOTAL_DB}]),
-    Db.
 
 start(Param) ->
     {ok, Db} = eredis:start_link(Param),
@@ -45,3 +42,17 @@ save_bulk(Db, Hash, Data) ->
     eredis:q(Db, Hmset_list).
 
 
+
+save_bulk_index(Db, Data) ->
+
+    %% Data = [Item]
+    %% Item = [{En,Ru},Prob], --> hash: En, key: Prob, value: Ru
+
+    Hmset_pipeline = [
+        ["HMSET", Phrase_1, Phrase_2, erlang:float_to_list(Prob)]
+        || [{Phrase_1,Phrase_2},Prob] <- Data
+    ],
+
+    io:format("~nHmset_pipeline = ~p~n", [Hmset_pipeline]),
+
+    eredis:qp(Db, Hmset_pipeline).

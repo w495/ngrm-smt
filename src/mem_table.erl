@@ -21,6 +21,8 @@
  ).
 
 
+-include("../include/db.hrl").
+
 get_store(Table) -> get(Table).
 
 get_stored_value(Name, Key) ->
@@ -33,12 +35,28 @@ set_stored_table(Name, Param)->
     put(Table, db:start(Param)),
     Table.
 
-restore(Name, Data) ->
+%% OLD
+restore__(Name, Data) ->
     Objects = db:restore(get_store(get_table(Name)), Name, Data),
     ets:insert(get_table(Name), Objects).
 
-save_to_store(Name, Data) ->
+%% OLD
+save_to_store__(Name, Data) ->
+    io:format("save_to_store", []),
     db:save_bulk(get_store(get_table(Name)), Name, Data).
+
+
+restore(Name, Data) ->
+    Db = db:start([{database, ?MODEL_DB}]),
+    Objects = db:restore(Db, Name, Data),
+    ets:insert(get_table(Name), Objects).
+
+save_to_store(Name, Data) ->
+    Model_db = db:start([{database, ?MODEL_DB}]),
+    Reverse_index_db = db:start([{database, ?REVERSE_INDEX_DB}]),
+    db:save_bulk(Model_db, Name, Data),
+    db:save_bulk_index(Reverse_index_db, Data).
+
 
 set_table(Name)->
     Table = ets:new(Name, [set]),
