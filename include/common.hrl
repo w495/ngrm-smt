@@ -1,4 +1,7 @@
 
+
+-define(APP, ngrmsmt).
+
 -define( FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
 
 

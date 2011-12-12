@@ -14,6 +14,9 @@ decode(Input_string) ->
     Word_list   = words:list(Input_string),
     %% Переводим список слов.
     Decoded_word_list = decode_word_list(Word_list, ?NGRAM_SIZE),
+
+    io:format("?NGRAM_SIZE = ~p", [?NGRAM_SIZE]),
+
     %% Формируем из него предложение.
     make_sentence(Decoded_word_list).
 
