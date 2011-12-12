@@ -7,7 +7,7 @@ main() ->
     %core:train({"data/en", "data/ru"}),
     %core:train({"data/knuth.en", "data/knuth.tr"}),
     %core:train({"data/knuth.en", "data/knuth.tr"}),
-    core:train({"data/h-1000-un.en", "data/h-1000-un.ru"}),
+    core:train({"data/h-100-un.en", "data/h-100-un.ru"}),
 
     io:format("~nmain~n"),
     ok.

@@ -13,7 +13,7 @@
 -define(MEM_LIMIT_PARALLEL_BYTES, ?MEM_LIMIT_PARALLEL*1024*1024).
 
 
--define(BUFF_SIZE, 100).
+-define(BUFF_SIZE, 10).
 -define(WORKER_TIMED, 5000).
 
 
@@ -41,15 +41,15 @@ process_one_line({Counter, Buffer})->
             case (erlang:memory(total) < ?MEM_LIMIT_NGRAMS_BYTES) of
                 true ->
                     %io:format("true", []),
+                    %Translation = sentences:times_words(Data_1, Data_2)
                     Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
-                    %Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
-                    %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
                     %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
                     ;
                 false ->
                     %io:format("false", []),
-                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
                     %Translation = sentences:times_words(Data_1, Data_2)
+                    Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
+                    %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
             end,
 
             case (Counter rem ?BUFF_SIZE)of

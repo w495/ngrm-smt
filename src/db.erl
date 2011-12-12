@@ -53,6 +53,4 @@ save_bulk_index(Db, Data) ->
         || [{Phrase_1,Phrase_2},Prob] <- Data
     ],
 
-    io:format("~nHmset_pipeline = ~p~n", [Hmset_pipeline]),
-
     eredis:qp(Db, Hmset_pipeline).
