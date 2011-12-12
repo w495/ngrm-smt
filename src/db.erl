@@ -12,6 +12,8 @@ start(Param) ->
     Db.
 
 restore(Db, Hash, Data) ->
+    ?LOG("restore", []),
+
     Keys = lists:append(Data),
     Hmget_list = ["HMGET", Hash | Keys ],
     {ok, Res_list} = eredis:q(Db, Hmget_list),
@@ -36,6 +38,7 @@ h_get(Db, Hash, Key) ->
 
 save_bulk(Db, Hash, Data) ->
     %% HMSET myhash field1 "Hello" field2 "World"
+    ?LOG("save_bulk", []),
     Hmset_list = ["HMSET", Hash |
         lists:append([ [Key, erlang:float_to_list(Value)]
             || [Key, Value] <- Data])],
@@ -45,8 +48,11 @@ save_bulk(Db, Hash, Data) ->
 
 save_bulk_index(Db, Data) ->
 
+
     %% Data = [Item]
     %% Item = [{En,Ru},Prob], --> hash: En, key: Prob, value: Ru
+
+
 
     Hmset_pipeline = [
         ["HMSET", Phrase_1, Phrase_2, erlang:float_to_list(Prob)]
@@ -54,3 +60,5 @@ save_bulk_index(Db, Data) ->
     ],
 
     eredis:qp(Db, Hmset_pipeline).
+
+

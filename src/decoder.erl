@@ -77,6 +77,7 @@ to_pairs( [Word, Prob | Tail ]) ->
 try_to_translate(Ngram) ->
     {ok, Db} = eredis:start_link([{database, ?REVERSE_INDEX_DB}]),
     {ok, List} = eredis:q(Db, ["HGETALL", Ngram]),
+    io:format("Ngram = ~p List = ~p~n", [Ngram, List]),
     to_pairs(List).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

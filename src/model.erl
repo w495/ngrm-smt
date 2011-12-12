@@ -4,10 +4,7 @@
 -include("../include/common.hrl").
 -include("../include/words.hrl").
 
--define(NORMA,       0.5).
--define(DEFAULT,     0.0).
--define(ITER_STEPS,       10).      % 5
--define(SAVE_LIMIT,       0.05).    % 5%
+
 
 
 train_s(Pairs) ->
@@ -24,13 +21,14 @@ train(Pairs)->
     mem_table:set_table(count_ef),
     mem_table:restore(t_ef, Pairs),
 
-    train(Pairs, ?ITER_STEPS),
-    Full = ets:match(mem_table:get_table(t_ef), '$1'),
-    %% Croped = ets:select(mem_table:get_table(t_ef), [{{'$1','$2'},[{'>','$2',?SAVE_LIMIT}],['$$']}]),
+    train(Pairs, ?MODEL_ITER_STEPS),
 
-    mem_table:save_to_store(t_ef, Full),
+    mem_table:save_to_store(t_ef,
+        ets:select(mem_table:get_table(t_ef),
+            [{{'$1','$2'},[{'>','$2',?MODEL_CROP_LIMIT}],['$$']}])
+    ),
 
-    %?LOG("Croped = ~p", [Croped]),
+
     mem_table:drop_table(t_ef),
     mem_table:drop_table(s_total_e),
     mem_table:drop_table(total_f),
@@ -65,7 +63,7 @@ compute_normalization([]) -> ok;
 compute_normalization([{Word_1, Word_2}| Rest ]) ->
 
     mem_table:add_value(s_total_e, Word_1,
-        mem_table:get_value(t_ef, {Word_1, Word_2}, ?NORMA), ?DEFAULT),
+        mem_table:get_value(t_ef, {Word_1, Word_2}, ?MODEL_TABLE_T_EF_NORMA), ?MODEL_TABLE_DEFAULT),
 
     compute_normalization(Rest).
 
@@ -73,15 +71,15 @@ compute_normalization([{Word_1, Word_2}| Rest ]) ->
 collect_counts([]) -> ok;
 collect_counts([{Word_1, Word_2}| Rest ]) ->
 
-    T_ef        = mem_table:get_value(t_ef, {Word_1, Word_2}, ?NORMA),
+    T_ef        = mem_table:get_value(t_ef, {Word_1, Word_2}, ?MODEL_TABLE_T_EF_NORMA),
     S_total_e   = mem_table:get_value(s_total_e, Word_1),
 
     %?LOG("~nCount_ef = ~p, Total_f = ~p", [Count_ef, Total_f]),
 
     Res =  T_ef / S_total_e,
 
-    mem_table:add_value(count_ef, {Word_1, Word_2}, Res, ?DEFAULT),
-    mem_table:add_value(total_f, Word_2, Res, ?DEFAULT),
+    mem_table:add_value(count_ef, {Word_1, Word_2}, Res, ?MODEL_TABLE_DEFAULT),
+    mem_table:add_value(total_f, Word_2, Res, ?MODEL_TABLE_DEFAULT),
 
     collect_counts(Rest).
 

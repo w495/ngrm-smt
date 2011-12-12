@@ -36,3 +36,12 @@
 -define(NGRAM_SIZE, config:get('ngram size', 5)).
 
 
+-define(MODEL_TABLE_T_EF_NORMA, config:get('model table t(e|f) norma', 0.5)).
+
+-define(MODEL_TABLE_DEFAULT,    config:get('model table default', 0.0)).
+
+-define(MODEL_ITER_STEPS,       config:get('model iter steps', 10)).      % 5
+
+-define(MODEL_CROP_LIMIT,       config:get('model crop limit', 0.005)).
+
+

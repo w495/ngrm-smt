@@ -4,9 +4,8 @@
 -include("../include/db.hrl").
 
 main() ->
-    %core:train({"data/en", "data/ru"}),
-    %core:train({"data/knuth.en", "data/knuth.tr"}),
-    %core:train({"data/knuth.en", "data/knuth.tr"}),
+    core:train({"data/en", "data/ru"}),
+    core:train({"data/knuth.en", "data/knuth.tr"}),
     %core:train({"data/h-100-un.en", "data/h-100-un.ru"}),
 
     io:format("~nmain~n"),
