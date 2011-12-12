@@ -1,4 +1,6 @@
 
+-define( FMT(F,P), lists:flatten(io_lib:format(F,P)) ).
+
 
 
 -define(LOG,     io:format).

@@ -10,7 +10,7 @@
 -define(MEM_LIMIT_NGRAMS, 750).
 -define(MEM_LIMIT_NGRAMS_BYTES, ?MEM_LIMIT_NGRAMS*1024*1024).
 
--define(MEM_LIMIT_PARALLEL, 1000).
+-define(MEM_LIMIT_PARALLEL, 200).
 -define(MEM_LIMIT_PARALLEL_BYTES, ?MEM_LIMIT_PARALLEL*1024*1024).
 
 
@@ -45,10 +45,14 @@ process_one_pair({Counter, Buffer})->
                 true ->
                     %io:format("true", []),
                     %Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE);
-                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE);
+                    %Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
+                    %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
+                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
+                    ;
                 false ->
                     %io:format("false", []),
-                    Translation = sentences:times_words(Data_1, Data_2)
+                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
+                    %Translation = sentences:times_words(Data_1, Data_2)
             end,
 
             %?LOG("Real cnt = ~p~n", [C]),

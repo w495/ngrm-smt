@@ -7,6 +7,8 @@
 -module(alists).
 
  -export([
+             max/1,
+             max/2,
              zip/2,
              lzip/2,
              rzip/2,
@@ -21,6 +23,20 @@
             list_test/1
          ]
  ).
+
+
+max([H|T]) ->
+    max(H, T).
+
+max(M, []) ->
+    M;
+
+max(M, [H|L]) when M > H ->
+    max(M, L);
+
+max(_M, [H|L]) ->
+    max(H,L).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
