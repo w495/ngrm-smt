@@ -2,6 +2,8 @@
 
 -include("../include/db.hrl").
 
+-include("../include/words.hrl").
+
 -export([decode/1]).
 
 %% Простой фразовый декодировщик для
@@ -11,7 +13,7 @@ decode(Input_string) ->
     %% Разбиваем входную строку на слова.
     Word_list   = words:list(Input_string),
     %% Переводим список слов.
-    Decoded_word_list = decode_word_list(Word_list, 5),
+    Decoded_word_list = decode_word_list(Word_list, ?NGRAM_SIZE),
     %% Формируем из него предложение.
     make_sentence(Decoded_word_list).
 
@@ -72,12 +74,13 @@ decode_word_list(Word_list, Size, MaxSize)->
 
 to_pairs( []) -> [];
 to_pairs( [Word, Prob | Tail ]) ->
-    [{erlang:list_to_float(erlang:binary_to_list(Prob)), erlang:binary_to_list(Word)} | to_pairs(Tail )].
+    [{erlang:list_to_float(erlang:binary_to_list(Prob)),
+        erlang:binary_to_list(Word)} | to_pairs(Tail )].
 
 try_to_translate(Ngram) ->
     {ok, Db} = eredis:start_link([{database, ?REVERSE_INDEX_DB}]),
     {ok, List} = eredis:q(Db, ["HGETALL", Ngram]),
-    io:format("Ngram = ~p List = ~p~n", [Ngram, List]),
+    io:format("~nNgram = ~p ~nList = ~p~n", [Ngram, List]),
     to_pairs(List).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
