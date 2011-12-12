@@ -9,27 +9,30 @@
 % длиннее этой величины будут обрубаться.
 %
 
--define(CHAR_PER_LINE_MAX_COUNT,    256).
+-define(CHAR_PER_LINE_MAX_COUNT, config:get('char per line max count', 256)).
+
 
 %
-% Cредняя длинна предложения в русском языке --- 10.38 символов.
+% Cредняя длинна предложения в русском языке --- 10.38 слов.
 % Возьмем следующее ограничение на длинну.
 % Предложения (списки слов) длиннее этой величины будут обрубаться.
 %
 
--define(WORDS_PER_LINE_MAX_COUNT,   40).
+-define(WORDS_PER_LINE_MAX_COUNT, config:get('words per line max count', 40)).
+
+
 
 %
 % Считаем словом любую последовательность символов между пробелами
 %
 
--define(WORDS_SEPARATOR_SRING,      " ").
+-define(WORDS_SEPARATOR_SRING, config:get('words separator sring', " ")).
 
 
 %
 % Считаем словом любую последовательность символов между пробелами
 %
 
--define(NGRAM_SIZE,     5).
+-define(NGRAM_SIZE, config:get('ngram size', 5)).
 
 

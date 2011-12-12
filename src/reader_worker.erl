@@ -6,15 +6,9 @@
 -include("../include/words.hrl").
 
 
--define(MEM_LIMIT_NGRAMS, 750).
--define(MEM_LIMIT_NGRAMS_BYTES, ?MEM_LIMIT_NGRAMS*1024*1024).
 
--define(MEM_LIMIT_PARALLEL, 0).
--define(MEM_LIMIT_PARALLEL_BYTES, ?MEM_LIMIT_PARALLEL*1024*1024).
-
-
--define(BUFF_SIZE, 10).
--define(WORKER_TIMED, 5000).
+-include("../include/memory.hrl").
+-include("../include/processes.hrl").
 
 
 start()->
@@ -28,7 +22,7 @@ reader()->
                 {reader, Reader} ->
                     put(reader, Reader),
                     Reader
-            after ?WORKER_TIMED ->
+            after ?READER_WORKER_TIMEOUT ->
                     ?LOG("worker timed out reader() ~n", [])
             end;
         Pid ->
@@ -38,7 +32,7 @@ reader()->
 process_one_line({Counter, Buffer})->
     receive
         {pair, {Data_1, Data_2, C}} ->
-            case (erlang:memory(total) < ?MEM_LIMIT_NGRAMS_BYTES) of
+            case (erlang:memory(total) < ?MEMORY_LIMIT_NGRAMS_BYTES) of
                 true ->
                     %io:format("true", []),
                     %Translation = sentences:times_words(Data_1, Data_2)
@@ -52,7 +46,7 @@ process_one_line({Counter, Buffer})->
                     %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
             end,
 
-            case (Counter rem ?BUFF_SIZE)of
+            case (Counter rem ?READER_WORKER_SENTENCES_BUFFER_SIZE)of
                 0 ->
                     process_buffer(Buffer),
                     New_buffer  = [Translation],
@@ -68,14 +62,14 @@ process_one_line({Counter, Buffer})->
             process_buffer(Buffer),
             ?LOG("~nsave.~p~n", [Counter]),
             ?LOG("worker stoped~n", []),
-            ok
-    after ?WORKER_TIMED ->
+            []
+    after ?READER_WORKER_TIMEOUT ->
             ?LOG("worker timed out at process_one_line~n", []),
-            ok
+            []
     end.
 
 process_buffer(Buffer)->
-    case (erlang:memory(total) < ?MEM_LIMIT_PARALLEL_BYTES) of
+    case (erlang:memory(total) < ?MEMORY_LIMIT_PARALLEL_BYTES) of
         true ->
             io:format("~n(+)memory(total) ~p ~n", [erlang:memory(total) / 1024 / 1024]),
             spawn(model, train_p, [Buffer]);

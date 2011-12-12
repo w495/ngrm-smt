@@ -25,18 +25,18 @@ train(Pairs)->
     mem_table:restore(t_ef, Pairs),
 
     train(Pairs, ?ITER_STEPS),
-    %% Full = ets:match(mem_table:get_table(t_ef), '$1'),
-    Croped = ets:select(mem_table:get_table(t_ef), [{{'$1','$2'},[{'>','$2',?SAVE_LIMIT}],['$$']}]),
+    Full = ets:match(mem_table:get_table(t_ef), '$1'),
+    %% Croped = ets:select(mem_table:get_table(t_ef), [{{'$1','$2'},[{'>','$2',?SAVE_LIMIT}],['$$']}]),
 
-    mem_table:save_to_store(t_ef, Croped),
+    mem_table:save_to_store(t_ef, Full),
 
     %?LOG("Croped = ~p", [Croped]),
     mem_table:drop_table(t_ef),
     mem_table:drop_table(s_total_e),
     mem_table:drop_table(total_f),
     mem_table:drop_table(count_ef),
-    ?LOG("~n model stoped ~n", []),
-    ok.
+
+    ?LOG("~n model stoped ~n", []).
 
 train(_Pairs, 0) -> ok;
 train(Pairs, Steps) ->
@@ -51,7 +51,7 @@ train(Pairs, Steps) ->
     estimate_probabilities(Pairs),
     train(Pairs, Steps - 1).
 
-cncc([]) -> ok;
+cncc([]) -> [];
 cncc([Sent | Rest ])->
 
     mem_table:clear_table(s_total_e),

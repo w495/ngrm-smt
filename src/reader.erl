@@ -2,11 +2,12 @@
 -compile(export_all).
 
 -include("../include/common.hrl").
--include("../include/words.hrl").
 
 
--define(READ_TIMED, 100).
--define(READER_TIMED, 5000).
+-include("../include/words.hrl").   %% для CHAR_PER_LINE_MAX_COUNT
+
+-include("../include/processes.hrl").
+
 
 
 start() ->
@@ -60,8 +61,7 @@ process_each_line({{Io_device_1, Io_device_2}, {Counter, Buffer}}) ->
             receive
                 next ->
                     process_each_line({{Io_device_1, Io_device_2}, {Counter + 1, []}})
-            after ?READ_TIMED ->
-                    %?LOG("reader next timed out ... continue ~n", []),
+            after ?READER_READ_TIMEOUT ->
                     process_each_line({{Io_device_1, Io_device_2}, {Counter + 1, []}})
             end
     end.
@@ -76,9 +76,8 @@ worker()->
                 {worker, Worker} ->
                     put(worker, Worker),
                     Worker
-            after ?READER_TIMED ->
-                    % ?LOG("reader timed out~n", []),
-                    ok
+            after ?READER_COMMAND_TIMEOUT ->
+                    []
             end;
         Pid ->
             Pid
