@@ -7,5 +7,7 @@ db/*
 ebin/*
 
 *~
+stub.*
 src/*~
+
 
