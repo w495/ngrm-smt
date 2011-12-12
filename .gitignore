@@ -1,2 +1,8 @@
+data/h-10000-un.en
+data/h-10000-un.ru
+data/un.en
+data/un.ru
+
+db/*
 ebin/*
 .eunit
