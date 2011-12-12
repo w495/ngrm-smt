@@ -12,10 +12,8 @@ train({Filename_1, Filename_2}) ->
 
     DataBase = spawn(db, start, []),
 
-
     Worker = spawn(worker, start, []),
     Reader = spawn(reader, start, []),
-
 
     Reader ! {read, {Filename_1, Filename_2}},
     Reader ! {worker, Worker},
@@ -27,6 +25,8 @@ train({Filename_1, Filename_2}) ->
     exit(DataBase, normal),
     ok.
 
+
+reconbain()
 
 
 

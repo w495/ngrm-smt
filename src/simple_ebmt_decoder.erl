@@ -1,5 +1,6 @@
 -module(simple_ebmt_decoder).
--compile(export_all).
+
+-export([decode/1]).
 
 %% Простой фразовый декодировщик для
 %% системы машинного перевода основанной на примерах
@@ -8,7 +9,7 @@ decode(Input_string) ->
     %% Разбиваем входную строку на слова.
     Word_list   = words:list(Input_string),
     %% Переводим список слов.
-    Decoded_word_list = decode_word_list(Word_list, 40),
+    Decoded_word_list = decode_word_list(Word_list, 6),
     %% Формируем из него предложение.
     make_sentence(Decoded_word_list).
 
@@ -65,7 +66,7 @@ decode_word_list(Word_list, Size, MaxSize)->
     end.
 
 try_to_translate(Ngram) ->
-    % Словарь соотвествий слов.
+    % Таблица соотвествий слов.
     case Ngram of
 
             ["i", "have", "a", "big", "fat", "cat"]    ->
