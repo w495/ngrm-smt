@@ -10,4 +10,5 @@ clean:
 	(cd src;$(MAKE) clean)
 
 make_ebin =  \
+	(mkdir -p ebin) && \
 	(cd src && $(MAKE) $(1)) || exit 1
