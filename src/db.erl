@@ -51,6 +51,7 @@ save_bulk_index(Db, Data) ->
         || [{Phrase_1,Phrase_2},Prob] <- Data
     ],
 
-    eredis:qp(Db, Hmset_pipeline).
+    % eredis:qp(Db, Hmset_pipeline)
+    [].
 
 

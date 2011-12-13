@@ -48,8 +48,7 @@ save_to_store__(Name, Data) ->
 
 restore(Name, Data) ->
     Db = db:start([{database, ?MODEL_DB}]),
-    Objects = db:restore(Db, Name, Data),
-    ets:insert(get_table(Name), Objects).
+    ets:insert(get_table(Name), db:restore(Db, Name, Data)).
 
 save_to_store(Name, Data) ->
     Model_db = db:start([{database, ?MODEL_DB}]),
