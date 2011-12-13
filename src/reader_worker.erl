@@ -36,14 +36,14 @@ process_one_line({Counter, Buffer})->
                 true ->
                     %io:format("true", []),
                     %Translation = sentences:times_words(Data_1, Data_2)
-                    Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
-                    %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
+                    %Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
+                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_DIAGONAL_OFFSET)
                     ;
                 false ->
                     %io:format("false", []),
                     %Translation = sentences:times_words(Data_1, Data_2)
-                    Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
-                    %Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_SIZE)
+                    %Translation = sentences:times_sentences(Data_1, Data_2, ?NGRAM_SIZE)
+                    Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_DIAGONAL_OFFSET)
             end,
 
             case (Counter rem ?READER_WORKER_SENTENCES_BUFFER_SIZE)of

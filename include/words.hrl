@@ -1,4 +1,12 @@
 
+
+%
+% Корпуса текста, на которых проходит обучение
+%
+
+-define(CORPORA, config:get('corpora', {"data/en", "data/ru"})).
+
+
 % 
 % Cредняя длинна слова в русском языке 5.28 символов.
 % Cредняя длинна предложения --- 10.38 символов.
@@ -28,12 +36,14 @@
 
 -define(WORDS_SEPARATOR_SRING, config:get('words separator sring', " ")).
 
-
 %
 % Считаем словом любую последовательность символов между пробелами
 %
 
 -define(NGRAM_SIZE, config:get('ngram size', 5)).
+
+
+-define(NGRAM_DIAGONAL_OFFSET, config:get('ngram diagonal offset', 2)).
 
 
 -define(MODEL_TABLE_T_EF_NORMA, config:get('model table t(e|f) norma', 0.5)).
