@@ -25,6 +25,13 @@ restore(Db, Hash, Data) ->
     ],
     lists:zip(Keys , Float_list).
 
+%% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %%
+%% 
+%% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %%
+
+h_set(Db, Hash, Key, Value) ->
+    eredis:q(Db, ["HSET", Hash, Key, Value]).
+
 h_get(Db, Hash, Key) ->
     case eredis:q(Db, ["HGET", Hash, Key]) of
         {ok, undefined } -> undefined;
@@ -32,6 +39,10 @@ h_get(Db, Hash, Key) ->
             ?LOG("~nValue = ~p~n", [Value]),
             erlang:list_to_float(erlang:binary_to_list(Value))
     end.
+
+%% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %%
+%%
+%% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %% %%
 
 save_bulk(Db, Hash, Data) ->
     %% HMSET myhash field1 "Hello" field2 "World"

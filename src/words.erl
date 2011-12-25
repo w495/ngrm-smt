@@ -16,7 +16,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 list(String) ->
-    list(String, ?WORDS_SEPARATOR_SRING, ?WORDS_PER_LINE_MAX_COUNT).
+    L = list(String, ?WORDS_SEPARATOR_SRING, ?WORDS_PER_LINE_MAX_COUNT),
+    [ erlang:phash2(Word) || Word <- L].
 
 %%% -------------------------------------------------------------------------
 
