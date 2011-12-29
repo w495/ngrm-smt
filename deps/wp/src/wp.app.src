@@ -1,0 +1,15 @@
+{application, wp,
+ [{description, "words preprocessor"},
+  {vsn, "0.1"},
+  {modules, [
+        alists,
+        convert,
+        ngrams,
+        ngrmsmt,
+        sentences,
+        words
+    ]},
+  {registered, []},
+  {applications, []},
+  {mod, {wp,[]}}
+ ]}.

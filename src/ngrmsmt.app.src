@@ -1,0 +1,25 @@
+{application, ngrmsmt,
+ [{description, "ngrm smt"},
+  {vsn, "1"},
+  {modules, [
+        ngrmsmt_gen_server,
+        ngrmsmt_supervisor,
+        alists,
+        config,
+        convert,
+        core,
+        db,
+        main,
+        mem_table,
+        model,
+        ngrams,
+        ngrmsmt,
+        reader,
+        reader_worker,
+        sentences,
+        words
+    ]},
+  {registered, []},
+  {applications, [kernel, stdlib, sasl]},
+  {mod, {ngrmsmt,[]}}
+ ]}.

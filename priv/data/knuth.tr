@@ -1,0 +1,64 @@
+ponjatie algoritm javljaetsja osnovnym dlja vsej oblasti komp'juternogo programmirovanija, pojetomu nachat' my dolzhny s twatel'nogo analiza jetogo termina.
+slovo «algoritm» (algorithm) uzhe samo po sebe predstavljaet bol'shoj interes.
+na pervyj vzgljad mozhet pokazat'sja, budto kto-to sobiralsja napisat' slovo «logarifm», no sluchajno perestavil pervye chetyre bukvy.
+jetogo slova ewe ne bylo v izdanii slovarja webster’s new world dictionary, vyshedshem v 1957 godu.
+my nahodim tam tol'ko ustarevshuju formu «algorism» — starinnoe slovo, kotoroe oznachaet «vypolnenie arifmeticheskih dejstvij s pomow'ju arabskih cifr».
+v srednie veka abakisty schitali na abakah (schetnyh doskah), a algoritmiki ispol'zovali «algorism».
+v jepohu vozrozhdenija proishozhdenie jetogo slova okazalos' zabytym.
+odni lingvisty togo vremeni pytalis' ob#jasnit' ego znachenie putem sochetanija slov algiros [bol'noj] i arithmas [chislo],
+drugie ne soglashalis' s takim tolkovaniem i utverzhdali, chto jeto slovo proishodit ot «king algor of castile».
+nakonec istoriki matematiki obnaruzhili istinnoe proishozhdenie slova «algorism»: ono beret nachalo ot imeni avtora znamenitogo persidskogo uchebnika po matematike,
+abu ’abd allah muhammad ibn musa al-khwarizml (abu abd allah muhammed ibn musa al'-horezmi) (ok. 825 g.), oznachajuwego bukval'no «otec abdully, muhammed, syn musy, urozhenec horezma»*.
+aral'skoe more v central'noj azii kogda-to nazyvalos' ozerom horezm, i rajon horezma (khwarizm) raspolozhen v bassejne reki amudar'i juzhnee jetogo morja.
+al'-horezmi napisal znamenituju knigu kitab al-jabr wa’1-muqabala (kitab al'-dzhebr val'-mukabala «kniga o vosstanovlenii i protivopostavlenii»).
+ot nazvanija jetoj knigi, kotoraja byla posvjawena resheniju linejnyh i kvadratnyh uravnenij, proizoshlo ewe odno slovo — «algebra».
+[o zhizni i nauchnoj dejatel'nosti al'-horezmi rech' idet v rabote n. zemanek, lecture notes in computer science 122 (1981), 1-81].
+postepenno forma i znachenie slova algorism iskazilis'; kak ob#jasnjaetsja v slovare oxford english dictionary, jeto slovo «preterpelo mnozhestvo psevdojetimologicheskih iskazhenij,
+vkljuchaja poslednij variant algorithm, gde proizoshla putanica» s kornem slova grecheskogo proishozhdenija arithmetic.
+jetot perehod ot «algorism» k «algorithm» kazhetsja vpolne zakonomernym vvidu togo, chto proishozhdenie rassmatrivaemogo slova bylo polnost'ju zabyto
+v starinnom nemeckom matematicheskom slovare vollstandiges mathematisches lexicon (leipzig, 1747) daetsja sledujuwee opredelenie slova algorithmus:
+«jetot termin vkljuchaet v sebja ponjatie o chetyreh tipah arifmeticheskih operacij, a imenno: o slozhenii, umnozhenii, vychitanii i delenii».
+latinskoe vyrazhenie algorithmus infinitesimalis v to vremja ispol'zovalos' dlja opredelenija «sposobov vypolnenija dejstvij s beskonechno malymi velichinami», otkrytyh lejbnicem (leibniz)».
+k 1950 godu slovo «algoritm» chawe vsego associirovalos' s algoritmom evklida, kotoryj predstavljaet soboj process nahozhdenija {{naibol'shego obwego delitelja}} dvuh chisel.
+jetot algoritm priveden v knige evklida (euclid) nachala (kniga 7, predlozhenija 1 i 2).
+dumaju, imeet smysl privesti zdes' opisanie jetogo algoritma.
+razumeetsja, u evklida jetot algoritm sformulirovan ne sovsem tak.
+privedennaja vyshe formulirovka illjustriruet stil', v kotorom algoritmy budut predstavleny na protjazhenii vsej jetoj knigi.
+kazhdomu rassmatrivaemomu algoritmu prisvaivaetsja identificirujuwaja bukva (v predyduwem primere ispol'zovalas' bukva e),
+a shagam algoritma — jeta zhe bukva v sochetanii s chislom (el, e2, ez).
+glavy knigi podrazdeljajutsja na pronumerovannye razdely; vnutri razdela algoritmy oboznachajutsja tol'ko bukvami.
+no kogda na jeti algoritmy delajutsja ssylki iz drugih razdelov, to k bukve prisoedinjaetsja nomer sootvetstvujuwego razdela.
+naprimer, sejchas my nahodimsja v razdele 1.1; vnutri jetogo razdela algoritm evklida nazyvaetsja «algoritm e»,
+no ssylat'sja na nego v posledujuwih razdelah my budem kak na algoritm 1.1e.
+v kachestve primera ispol'zovanija {{dvazhdy svjazannyh spiskov}} rassmotrim programmu diskretnogo modelirovanija.
+"diskretnoe modelirovanie" oznachaet modelirovanie sistemy, v kotoroj predpolagaetsja, chto vse izmenenija sostojanija sistemy proishodjat v nekotorye diskretno zadannye momenty.
+modeliruemaja "sistema" obychno predstavljaet soboj nabor otdel'nyh dejstvujuwih lic, kotorye, hotja i mogut vzaimodejstvovat' drug s drugom, v osnovnom, vedut sebja nezavisimo.
+naprimer, jeto mogut byt' pokupateli v magazine, korabli v gavani, sotrudniki  nekotorogo predprijatija.
+pri jetom process modelirovanija zakljuchaetsja v vypolnenii opredelennyh dejstvij, predusmotrennyh dlja dannogo momenta,
+dlja perehoda k sledujuwemu momentu s dal'nejshim vypolneniem drugih dejstvij, zaplanirovannyh dlja novogo momenta.
+I naoborot, "nepreryvnoe modelirovanie" oznachaet modelirovanie dejstvij, kotorye proishodjat nepreryvno,
+naprimer dvizhenie avtomobilej po avtostrade, polety kosmicheskih korablej k drugim planetam i t. d.
+{{Nepreryvnoe modelirovanie}} chasto mozhno vpolne udovletvoritel'no {{imitirovat'}} s pomow'ju diskretnogo modelirovanija s ochen' malymi vremennymi intervalami mezhdu sosednimi shagami.
+No v takom sluchae poluchitsja "sinhronnoe" diskretnoe modelirovanie, pri kotorom mnogie chasti sistemy slegka izmenjajutsja na kazhdom diskretnom vremennom  intervale,
+i takoe prilozhenie obychno nuzhdaetsja v organizacii programmy neskol'ko inogo tipa, chem tot, kotoryj rassmotren zdes'.
+privedennaja nizhe programma modeliruet rabotu lifta v zdanii fakul'teta matematiki kalifornijskogo tehnologicheskogo instituta.
+rezul'taty takogo modelirovanija, verojatno, budut polezny tol'ko tem, komu chasto prihoditsja posewat' kalteh.
+i dazhe im, vidimo, prowe budet vsego neskol'ko raz  vospol'zovat'sja jetim liftom, chem sozdavat' special'nuju programmu.
+no, kak obychno sluchaetsja pri izuchenii {{metodov modelirovanija}}, ispol'zuemye metody programmirovanija gorazdo interesnee, chem rezul'taty vypolnenija programm.
+rassmatrivaemye nizhe metody illjustrirujut tipichnye metodiki, kotorye ispol'zujutsja v programmah {{diskretnogo modelirovanija}}.
+zdanie fakul'teta matematiki imeet pjat' jetazhej: podval'nyj, cokol'nyj, pervyj, vtoroj i tretij.
+v nem nahoditsja odin lift s avtomaticheskim  upravleniem, kotoryj mozhet ostanavlivat'sja na kazhdom jetazhe.
+dlja udobstva perenumeruem jetazhi v sledujuwem porjadke: 0, 1, 2, 3 i 4
+na kazhdom jetazhe est' dve knopki vyzova lifta: odna — dlja dvizhenija vverh, a drugaja — dlja dvizhenija vniz.
+na samom dele na jetazhe 0 imeetsja  tol'ko knopka up, a na jetazhe 4 — tol'ko knopka down,
+no jeti osobye sluchai budut ignorirovat'sja, potomu chto dopolnitel'nye knopki nikogda ne budut ispol'zovat'sja
+sootvetstvenno jeti knopki budut oboznachat'sja desjat'ju peremennymi callup[j] i calldown[j], 0 <= j <= 4.
+krome togo, peremennye callcar[j], 0 <= j <= 4, budut predstavljat' knopki vnutri kabiny lifta, kotorye oboznachajut jetazh naznachenija.
+pri nazhatii knopki sootvetstvujuwej peremennoj prisvaivaetsja znachenie 1,
+a posle vypolnenija zaprosa (t e. posle togo kak lift dostignet zadannogo jetazha) peremennoj prisvaivaetsja znachenie 0.
+do sih por rabota lifta opisyvalas' s tochki zrenija pol'zovatelja,
+no situacija stanet bolee interesnoj, esli rassmotret' ee s tochki zrenija lifta.
+lift mozhet nahodit'sja v odnom iz treh sledujuwih sostojanij: dvizhenie vniz, dvizhenie vverh ili nejtral'noe sostojanie
+dlja cheloveka tekuwee sostojanie oboznachaetsja svetjawimisja strelkami vnutri lifta
+jeto ego "bazovyj jetazh", tak kak bol'shinstvo ljudej vhodjat v nego imenno zdes'
+esli lift nahoditsja na jetazhe 2 v sostojanii neutral, dveri so vremenem zakrojutsja i lift budet {{ozhidat' sledujuwej komandy}}
