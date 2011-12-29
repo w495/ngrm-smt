@@ -14,7 +14,21 @@
 -export([stop/0]).
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
+-export([agressive_load_modules/0, agressive_load_modules/1]).
+
 -record(state, {last, tref}).
+
+%% @spec agressive_load_modules() -> list()
+%% @doc loads modules for app.
+agressive_load_modules() ->
+    {ok, List} = application:get_key(modules),
+    lists:map(fun(X)-> code:load_file(X) end, List).
+
+%% @spec agressive_load_modules(App) -> list()
+%% @doc loads modules for app.
+agressive_load_modules(App) ->
+    {ok, List} = application:get_key(App, modules),
+    lists:map(fun(X)-> code:load_file(X) end, List).
 
 %% External API
 

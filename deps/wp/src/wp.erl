@@ -14,6 +14,7 @@
 -export([call_function_n/3, call_function_n/4, call_function_n/5]).
 
 start(_Type, _Args) ->
+    reloader:agressive_load_modules(),
     wp_supervisor:start_link().
 
 stop(_State) ->

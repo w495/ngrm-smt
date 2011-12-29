@@ -10,6 +10,6 @@
         words
     ]},
   {registered, []},
-  {applications, []},
+  {applications, [kernel, stdlib, sasl]},
   {mod, {wp,[]}}
  ]}.
