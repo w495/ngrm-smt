@@ -1,9 +1,8 @@
-data/h-10000-un.en
-data/h-10000-un.ru
-data/un.en
-data/un.ru
+priv/data/h-10000-un.en
+priv/data/h-10000-un.ru
+priv/data/un.en
+priv/data/un.ru
 
-db/*
 ebin/*
 
 *~
