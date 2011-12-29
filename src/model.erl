@@ -34,6 +34,7 @@ train(Pairs)->
     mem_table:drop_table(total_f),
     mem_table:drop_table(count_ef),
 
+
     ?LOG("~n model stoped ~n", []).
 
 train(_Pairs, 0) -> ok;

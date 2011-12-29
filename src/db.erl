@@ -6,8 +6,16 @@
 -include("../include/words.hrl").
 
 start(Param) ->
-    {ok, Db} = eredis:start_link(Param),
+    case get(db) of
+        undefined ->
+            {ok, Db} = eredis:start_link(Param),
+            put(db, Db);
+        Db -> Db
+    end,
     Db.
+
+stop(Db) ->
+    eredis:stop(Db).
 
 restore(Db, Hash, Data) ->
 
@@ -61,8 +69,8 @@ save_bulk_index(Db, Data) ->
         ["HMSET", Phrase_1, Phrase_2, erlang:float_to_list(Prob)]
         || [{Phrase_1,Phrase_2},Prob] <- Data
     ],
-
-    % eredis:qp(Db, Hmset_pipeline)
+    io:format("~n~n~n~n ==== save_bulk_index ~n~n~n~n", []),
+    eredis:qp(Db, Hmset_pipeline),
     [].
 
 

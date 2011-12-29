@@ -80,7 +80,8 @@ to_pairs( [Word, Prob | Tail ]) ->
     [{erlang:list_to_float(erlang:binary_to_list(Prob)),
         erlang:binary_to_list(Word)} | to_pairs(Tail )].
 
-try_to_translate(Ngram) ->
+try_to_translate(Ngram_) ->
+    Ngram = words:list(Ngram_),
     {ok, Db} = eredis:start_link([{database, ?REVERSE_INDEX_DB}]),
     {ok, List} = eredis:q(Db, ["HGETALL", Ngram]),
     io:format("~nNgram = ~p ~nList = ~p~n", [Ngram, List]),

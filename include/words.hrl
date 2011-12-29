@@ -4,7 +4,7 @@
 % Корпуса текста, на которых проходит обучение
 %
 
--define(CORPORA, config:get('corpora', {"data/en", "data/ru"})).
+-define(CORPORA, config:get('corpora', {"priv/data/en", "priv/data/ru"})).
 
 
 % 
@@ -46,7 +46,10 @@
 -define(NGRAM_DIAGONAL_OFFSET, config:get('ngram diagonal offset', 2)).
 
 
--define(MODEL_TABLE_T_EF_NORMA, config:get('model table t(e|f) norma', 0.5)).
+-define(ERLANG_MACHINE_EPSILON, math:pow(2, -1074)).
+
+
+-define(MODEL_TABLE_T_EF_NORMA, config:get('model table t(e|f) norma', ?ERLANG_MACHINE_EPSILON)).
 
 -define(MODEL_TABLE_DEFAULT,    config:get('model table default', 0.0)).
 

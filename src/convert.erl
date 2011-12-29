@@ -13,6 +13,7 @@
             to_list/1,
             to_float/1,
             string_to_term/1,
+            eredis_to_binary/1,
             test/0
         ]
 ).

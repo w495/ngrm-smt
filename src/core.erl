@@ -9,7 +9,6 @@
 
 
 train({Filename_1, Filename_2}) ->
-
     Worker = spawn(reader_worker, start, []),
     Reader = spawn(reader, start, []),
 
@@ -18,9 +17,10 @@ train({Filename_1, Filename_2}) ->
 
     Worker ! {reader, Reader},
 
-    exit(Reader, normal),
-    exit(Worker, normal),
+    io:format("~ntrain~n", []),
 
+    %exit(Reader, normal),
+    %exit(Worker, normal),
     ok.
 
 

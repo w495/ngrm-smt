@@ -56,7 +56,6 @@ save_to_store(Name, Data) ->
     db:save_bulk(Model_db, Name, Data),
     db:save_bulk_index(Reverse_index_db, Data).
 
-
 set_table(Name)->
     Table = ets:new(Name, [set]),
     put(Name, Table),

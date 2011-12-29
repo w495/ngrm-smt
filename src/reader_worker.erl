@@ -13,7 +13,8 @@
 
 start()->
     reader() ! next,
-    process_one_line({1, []}).
+    fprof:apply(reader_worker, process_one_line, [{1, []}]).
+    %process_one_line({1, []}).
 
 reader()->
     case get(reader) of
@@ -46,6 +47,8 @@ process_one_line({Counter, Buffer})->
                     Translation = sentences:comb_sentences(Data_1, Data_2, ?NGRAM_SIZE, ?NGRAM_DIAGONAL_OFFSET)
             end,
 
+            %lists:foreach(fun(Pid) -> erlang:garbage_collect(Pid) end, erlang:processes() ),
+
             case (Counter rem ?READER_WORKER_SENTENCES_BUFFER_SIZE)of
                 0 ->
                     process_buffer(Buffer),
@@ -69,6 +72,8 @@ process_one_line({Counter, Buffer})->
     end.
 
 process_buffer(Buffer)->
+
+
     case (erlang:memory(total) < ?MEMORY_LIMIT_PARALLEL_BYTES) of
         true ->
             io:format("~n(+)memory(total) ~p ~n", [erlang:memory(total) / 1024 / 1024]),
