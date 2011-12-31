@@ -3,6 +3,7 @@ priv/logs/*
 *ebin/*
 
 *~
+*.trace
 *erl_crash.dump
 *stub.*
 
