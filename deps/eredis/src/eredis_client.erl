@@ -28,7 +28,7 @@
 -include("eredis.hrl").
 
 %% API
--export([start_link/5, stop/1, select_database/2]).
+-export([start_link/5, start_link/6, stop/1, select_database/2]).
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
@@ -60,6 +60,20 @@
                         {ok, Pid::pid()} | {error, Reason::term()}.
 start_link(Host, Port, Database, Password, ReconnectSleep) ->
     gen_server:start_link(?MODULE, [Host, Port, Database, Password, ReconnectSleep], []).
+
+
+-spec start_link(Register_type::atom(),
+                 Host::list(),
+                 Port::integer(),
+                 Database::integer(),
+                 Password::string(),
+                 ReconnectSleep::integer()) ->
+                        {ok, Pid::pid()} | {error, Reason::term()}.
+start_link(local, Host, Port, Database, Password, ReconnectSleep) ->
+    gen_server:start_link({local, ?MODULE}, ?MODULE, [Host, Port, Database, Password, ReconnectSleep], []);
+
+start_link(global, Host, Port, Database, Password, ReconnectSleep) ->
+    gen_server:start_link({global, ?MODULE}, ?MODULE, [Host, Port, Database, Password, ReconnectSleep], []).
 
 
 stop(Pid) ->

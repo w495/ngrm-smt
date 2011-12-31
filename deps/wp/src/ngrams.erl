@@ -385,11 +385,11 @@ optimized_ngram_list_tail([Head | Tail], Lenth) ->
 
 %%% ==========================================================================
 
-optimized_ngram_list_e1_tail(_List, 0) -> [];
-optimized_ngram_list_e1_tail(List, Lenth) ->
+optimized_ngram_list_e1(_List, 0) -> [];
+optimized_ngram_list_e1(List, Lenth) ->
     case optimized_strict_ngram(List, Lenth) of
         [] ->
-            optimized_ngram_list_e1_tail(List, Lenth-1);
+            optimized_ngram_list_e1(List, Lenth-1);
         L ->
             lists:append(L, optimized_ngram_list_e1_tail(L, Lenth))
     end.

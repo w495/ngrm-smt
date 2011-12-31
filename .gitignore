@@ -1,4 +1,5 @@
 priv/data/*
+priv/logs/*
 ebin/*
 
 *~

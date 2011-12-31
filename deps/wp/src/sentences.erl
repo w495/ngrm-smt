@@ -86,8 +86,8 @@ times_diago_sentences(Snt_1, Snt_2, Size, Offset) ->
 comb_sentences(Snt_1, Snt_2, Size, Offset)->
     List_1 = words:list(Snt_1),
     List_2 = words:list(Snt_2),
-    Ngram_List_1 = ngrams:optimized_ngram_list_e1(List_1, Size),
-    Ngram_List_2 = ngrams:optimized_ngram_list_e1(List_2, Size),
+    Ngram_List_1 = ngrams:optimized_ngram_list(List_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list(List_2, Size),
     lists:append([
         ?double(alists, times, List_1 , List_2),
         ?double_offset(alists, times_diag, Ngram_List_1, Ngram_List_2, Offset)
