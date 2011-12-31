@@ -1,7 +1,7 @@
 priv/data/*
 priv/logs/*
-ebin/*
+*ebin/*
 
 *~
-stub.*
-src/*~
+*stub.*
+*src/*~
