@@ -26,6 +26,8 @@
     optimized_ngram/2,
     optimized_ngram_from_string/2,
     optimized_ngram_list/2,
+    optimized_ngram_e1_list/2,
+    optimized_ngram_e1_list/2,
     optimized_ngram_list_from_string/2,
     optimized_ngram_list_n/2,
     optimized_ngram_list_tail/2,
@@ -171,7 +173,7 @@ ngram_list_n(List, Lenth) ->
 
 %%% O(log(n))
 ngram_list(_List, 0) -> [];
-ngram_list(List, Lenth) when (Lenth >= 0) ->
+ngram_list(List, Lenth) ->
     case ngram(List, Lenth) of
         [] ->
             ngram_list(List, Lenth-1);
@@ -182,7 +184,7 @@ ngram_list(List, Lenth) when (Lenth >= 0) ->
 %%% -------------------------------------------------------------------------
 
 ngram_list_tail( _InputList, 1) -> [];
-ngram_list_tail([H | T], Lenth) when (Lenth > 1) ->
+ngram_list_tail([H | T], Lenth) ->
     Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
     lists:append(Res, ngram_list_tail(Res, Lenth-1)).
 
@@ -192,7 +194,7 @@ ngram_list_tail([H | T], Lenth) when (Lenth > 1) ->
 %%%
 
 ngram_list_e1(_List, 1) -> [];
-ngram_list_e1(List, Lenth) when (Lenth > 1) ->
+ngram_list_e1(List, Lenth) ->
     case ngram(List, Lenth) of
         [] ->
             ngram_list_e1(List, Lenth-1);
@@ -203,9 +205,9 @@ ngram_list_e1(List, Lenth) when (Lenth > 1) ->
 %%% -------------------------------------------------------------------------
 
 ngram_list_e1_tail(_InputList, 2) -> [];
-ngram_list_e1_tail([H | T], Lenth) when (Lenth > 1) ->
+ngram_list_e1_tail([H | T], Lenth) ->
     Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
-    lists:append(Res, ngram_list_tail(Res, Lenth-1)).
+    lists:append(Res, ngram_list_e1_tail(Res, Lenth-1)).
 
 %%% ==========================================================================
 %%%
@@ -380,7 +382,27 @@ optimized_ngram_list_tail([Head | Tail], Lenth) ->
         [ Ntail || [ _ | Ntail] <- Tail]),
     lists:append(Res, optimized_ngram_list_tail(Res, Lenth-1)).
 
+
+%%% ==========================================================================
+
+optimized_ngram_list_e1_tail(_List, 0) -> [];
+optimized_ngram_list_e1_tail(List, Lenth) ->
+    case optimized_strict_ngram(List, Lenth) of
+        [] ->
+            optimized_ngram_list_e1_tail(List, Lenth-1);
+        L ->
+            lists:append(L, optimized_ngram_list_e1_tail(L, Lenth))
+    end.
+
 %%% -------------------------------------------------------------------------
+
+optimized_ngram_list_e1_tail(_InputList, 2) -> [];
+optimized_ngram_list_e1_tail([Head | Tail], Lenth) ->
+    Res = lists:append(optimized_strict_ngram(Head, Lenth-1),
+        [ Ntail || [ _ | Ntail] <- Tail]),
+    lists:append(Res, optimized_ngram_list_e1_tail(Res, Lenth-1)).
+
+%%% ==========================================================================
 
 optimized_strict_ngram([_ | R], 0) ->
     [[] | optimized_strict_ngram(R, 0)];
