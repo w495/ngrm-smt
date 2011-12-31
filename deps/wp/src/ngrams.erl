@@ -1,33 +1,46 @@
 -module(ngrams).
--compile(export_all).
+
+-vsn(0.3).
+-author('w-495').
+-decription(
+    "n-gramm extraction tool"
+).
+
+%-compile(export_all).
 
 -export([
-        decorator_list/3,
-        decorator_lists/3,
-        decorator_proplist/3,
-        ngram/2,
-        ngram_from_string/2,
-        ngram_list/2,
-        ngram_list_e1/2,
-        ngram_list_from_string/2,
-        ngram_list_n/2,
-        ngram_lists/2,
-        ngram_lists_from_string/2,
-        ngram_proplist/2,
-        ngram_proplist_from_string/2,
-        ngram_set__/4,
-        ngram_set__e1/4,
-        optimized_ngram/2,
-        optimized_ngram_from_string/2,
-        optimized_ngram_list/2,
-        optimized_ngram_list_from_string/2,
-        optimized_ngram_list_n/2,
-        optimized_ngram_list_tail/2,
-        optimized_strict_ngram/2,
-        strict_ngram/2,
-        tailed_ngram/2,
-        test/0,
-        test/1
+    ngram/2,
+    ngram_from_string/2,
+    ngram_list/2,
+    ngram_list_e1/2,
+    ngram_list_e1_tail/2,
+    ngram_list_from_string/2,
+    ngram_list_n/2,
+    ngram_list_tail/2,
+    ngram_lists/2,
+    ngram_lists_from_string/2,
+    ngram_lists_tail/2,
+    ngram_proplist/2,
+    ngram_proplist_from_string/2,
+    ngram_proplist_tail/2,
+    optimized_ngram/2,
+    optimized_ngram_from_string/2,
+    optimized_ngram_list/2,
+    optimized_ngram_list_from_string/2,
+    optimized_ngram_list_n/2,
+    optimized_ngram_list_tail/2,
+    optimized_ngram_lists/2,
+    optimized_ngram_lists_from_string/2,
+    optimized_ngram_lists_tail/2,
+    optimized_ngram_proplist/2,
+    optimized_ngram_proplist_from_string/2,
+    optimized_ngram_proplist_tail/2,
+    optimized_strict_ngram/2,
+    strict_ngram/2,
+    tailed_ngram/2,
+    tailed_ngram/3,
+    test/0,
+    test/1
 ]).
 
 
@@ -47,9 +60,6 @@ ngram(List, Lenth) when is_list(List) ->
 ngram_from_string(String, Lenth) when is_list(String) ->
     strict_ngram(words:list(String), Lenth).
 
-%%% -------------------------------------------------------------------------
-
-
 %%% ==========================================================================
 %%%
 
@@ -63,21 +73,20 @@ ngram_lists_from_string(String, Lenth) ->
 ngram_list_from_string(String, Lenth) ->
     ngram_list(words:list(String), Lenth).
 
-%%% -------------------------------------------------------------------------
 
 %%% ==========================================================================
 %%% Возвращает словарь списков n-грамм.
 %%% Ключ --- длинна, значание --- список n-грамм соответсвующей длинны.
 %%%
-%%% >>> test:ngram_prop_list([1, 2, 3], 1).
+%%% ngrams:ngram_proplist([1, 2, 3], 1).
 %%% [{1,[[1],[2],[3]]}]
-%%% >>> test:ngram_prop_list([1, 2, 3], 2).
+%%% ngrams:ngram_proplist([1, 2, 3], 2).
 %%% [{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}]
-%%% >>> test:ngram_prop_list([1, 2, 3], 3).
+%%% ngrams:ngram_proplist([1, 2, 3], 3).
 %%% [{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}]
-%%% >>> test:ngram_prop_list([1, 2, 3], 4).
+%%% ngrams:ngram_proplist([1, 2, 3], 4).
 %%% [{4,[]},{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}]
-%%% >>> test:ngram_prop_list([1, 2, 3], 5).
+%%% ngrams:ngram_proplist([1, 2, 3], 5).
 %%% [{5,[]},
 %%%  {4,[]},
 %%%  {3,[[1,2,3]]},
@@ -86,30 +95,34 @@ ngram_list_from_string(String, Lenth) ->
 %%%
 
 ngram_proplist(_List, 0) -> [];
-ngram_proplist(List, Lenth) when (Lenth >= 0) ->
+ngram_proplist(List, Lenth) ->
     case ngram(List, Lenth) of
         [] ->
             [{Lenth, []} | ngram_proplist(List, Lenth-1)];
         L ->
-            [{Lenth, L} |ngram_set__(?MODULE, decorator_proplist, L, Lenth)]
+            [{Lenth, L} |ngram_proplist_tail(L, Lenth)]
     end.
 
 %%% -------------------------------------------------------------------------
 
+ngram_proplist_tail(_InputList, 1) -> [];
+ngram_proplist_tail([H | T], Lenth) ->
+    Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
+    [{Lenth-1, Res} | ngram_proplist_tail(Res, Lenth-1)].
 
 %%% ==========================================================================
 %%% Возвращает список списков n-грамм длинны меньше Lenth.
 %%% В каждом списке находятся n-граммы заданной длинны.
 %%%
-%%% >>> test:ngram_lists([1, 2, 3], 1).
+%%% ngrams:ngram_lists([1, 2, 3], 1).
 %%% [[[1],[2],[3]]]
-%%% >>> test:ngram_lists([1, 2, 3], 2).
+%%% ngrams:ngram_lists([1, 2, 3], 2).
 %%% [[[1,2],[2,3]],[[1],[2],[3]]]
-%%% >>> test:ngram_lists([1, 2, 3], 3).
+%%% ngrams:ngram_lists([1, 2, 3], 3).
 %%% [[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]]
-%%% >>> test:ngram_lists([1, 2, 3], 4).
+%%% ngrams:ngram_lists([1, 2, 3], 4).
 %%% [[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]]
-%%% >>> test:ngram_lists([1, 2, 3], 5).
+%%% ngrams:ngram_lists([1, 2, 3], 5).
 %%% [[],[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]]
 %%%
 
@@ -119,36 +132,31 @@ ngram_lists(List, Lenth) ->
         [] ->
             [[]| ngram_lists(List, Lenth-1)];
         L ->
-            [L | ngram_set__(?MODULE, decorator_lists, L, Lenth)]
+            [L | ngram_lists_tail(L, Lenth)]
     end.
 
 %%% -------------------------------------------------------------------------
+
+ngram_lists_tail( _InputList, 1) -> [];
+ngram_lists_tail([H | T], Lenth) ->
+    Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
+    [Res | ngram_lists_tail(Res, Lenth-1)].
 
 %%% ==========================================================================
 %%% Возвращает список всех n-грамм длинны меньше Lenth.
 %%%
-%%% >>> test:ngram_list([1, 2, 3], 1).
+%%% ngrams:ngram_list([1, 2, 3], 1).
 %%% [[1],[2],[3]]
-%%% >>> test:ngram_list([1, 2, 3], 2).
+%%% ngrams:ngram_list([1, 2, 3], 2).
 %%% [[1,2],[2,3],[1],[2],[3]]
-%%% >>> test:ngram_list([1, 2, 3], 3).
+%%% ngrams:ngram_list([1, 2, 3], 3).
 %%% [[1,2,3],[1,2],[2,3],[1],[2],[3]]
-%%% >>> test:ngram_list([1, 2, 3], 4).
+%%% ngrams:ngram_list([1, 2, 3], 4).
 %%% [[1,2,3],[1,2],[2,3],[1],[2],[3]]
-%%% >>> test:ngram_list([1, 2, 3], 5).
+%%% ngrams:ngram_list([1, 2, 3], 5).
 %%% [[1,2,3],[1,2],[2,3],[1],[2],[3]]
 %%%
 
-ngram_list(_List, 0) -> [];
-ngram_list(List, Lenth) when (Lenth >= 0) ->
-    case ngram(List, Lenth) of
-        [] ->
-            ngram_list(List, Lenth-1);
-        L ->
-            lists:append(L, ngram_set__(?MODULE, decorator_list, L, Lenth))
-    end.
-
-%%% -------------------------------------------------------------------------
 %%% O(n)
 ngram_list_n(_List, 0) -> [];
 ngram_list_n(List, Lenth) ->
@@ -158,6 +166,26 @@ ngram_list_n(List, Lenth) ->
         L ->
             lists:append(L, ngram_list_n(List, Lenth-1))
     end.
+
+%%% -------------------------------------------------------------------------
+
+%%% O(log(n))
+ngram_list(_List, 0) -> [];
+ngram_list(List, Lenth) when (Lenth >= 0) ->
+    case ngram(List, Lenth) of
+        [] ->
+            ngram_list(List, Lenth-1);
+        L ->
+            lists:append(L, ngram_list_tail(L, Lenth))
+    end.
+
+%%% -------------------------------------------------------------------------
+
+ngram_list_tail( _InputList, 1) -> [];
+ngram_list_tail([H | T], Lenth) when (Lenth > 1) ->
+    Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
+    lists:append(Res, ngram_list_tail(Res, Lenth-1)).
+
 
 %%% ==========================================================================
 %%% Возвращает список всех n-грамм длинны больше 1 и меньше Lenth.
@@ -169,56 +197,31 @@ ngram_list_e1(List, Lenth) when (Lenth > 1) ->
         [] ->
             ngram_list_e1(List, Lenth-1);
         L ->
-            lists:append(L, ngram_set__e1(?MODULE, decorator_list, L, Lenth))
+            lists:append(L, ngram_list_e1_tail(L, Lenth))
     end.
 
 %%% -------------------------------------------------------------------------
 
-%%% ==========================================================================
-%%%
-
-decorator_proplist(Mod, Fn, {_, Res, Lenth}) ->
-    [{Lenth, Res} | Mod:Fn(?MODULE, decorator_proplist, Res, Lenth)].
-
-decorator_lists(Mod, Fn, {_, Res, Lenth}) ->
-    [Res | Mod:Fn(?MODULE, decorator_lists, Res, Lenth)].
-
-decorator_list(Mod, Fn, {_, Res, Lenth}) ->
-    lists:append(Res, Mod:Fn(?MODULE, decorator_list, Res, Lenth)).
-
-%%% -------------------------------------------------------------------------
-
-%%% ==========================================================================
-%%%
-
-ngram_set__(_Mod, _FormFn, _InputList, 1) -> [];
-ngram_set__(Mod, FormFn, [H | T] = InputList, Lenth) when (Lenth > 1) ->
+ngram_list_e1_tail(_InputList, 2) -> [];
+ngram_list_e1_tail([H | T], Lenth) when (Lenth > 1) ->
     Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
-    Mod:FormFn(?MODULE, ngram_set__, {InputList, Res, Lenth-1}).
-
-
-ngram_set__e1(_Mod, _FormFn, _InputList, 2) -> [];
-ngram_set__e1(Mod, FormFn, [H | T] = InputList, Lenth) when (Lenth > 1) ->
-    Res = lists:append(strict_ngram(H, Lenth-1), [ Ntail || [ _ | Ntail] <- T]),
-    Mod:FormFn(?MODULE, ngram_set__e1, {InputList, Res, Lenth-1}).
-
-%%% -------------------------------------------------------------------------
+    lists:append(Res, ngram_list_tail(Res, Lenth-1)).
 
 %%% ==========================================================================
 %%%
-%%% >>> test:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 1).
+%%% ngrams:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 1).
 %%% [[1],[2],[3],[4],[5],[6],[7]]
 %%%
-%%% >>> test:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 2).
+%%% ngrams:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 2).
 %%% [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7]]
 %%%
-%%% >>> test:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 3).
+%%% ngrams:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 3).
 %%% [[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7],[6,7],[7]]
 %%%
-%%% >>> test:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 4).
+%%% ngrams:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 4).
 %%% [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7],[5,6,7],[6,7],[7]]
 %%%
-%%% >>> test:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 5).
+%%% ngrams:tailed_ngram([1, 2, 3, 4, 5, 6, 7], 5).
 %%% [[1,2,3,4,5],
 %%% [2,3,4,5,6],
 %%% [3,4,5,6,7],
@@ -241,34 +244,34 @@ tailed_ngram(List, S, Lenth) ->
 
 %%% ==========================================================================
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 0).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 0).
 %%% [[],[],[],[],[],[],[]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 1).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 1).
 %%% [[1],[2],[3],[4],[5],[6],[7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 2).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 2).
 %%% [[1,2],[2,3],[3,4],[4,5],[5,6],[6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 3).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 3).
 %%% [[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 4).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 4).
 %%% [[1,2,3,4],[2,3,4,5],[3,4,5,6],[4,5,6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 5).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 5).
 %%% [[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 6).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 6).
 %%% [[1,2,3,4,5,6],[2,3,4,5,6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 7).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 7).
 %%% [[1,2,3,4,5,6,7]]
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 8).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 8).
 %%% []
 %%%
-%%% >>> test:strict_ngram([1, 2, 3, 4, 5, 6, 7], 9).
+%%% ngrams:strict_ngram([1, 2, 3, 4, 5, 6, 7], 9).
 %%% []
 %%%
 
@@ -296,10 +299,56 @@ optimized_ngram_from_string(String, Lenth) when is_list(String) ->
 
 %%% -------------------------------------------------------------------------
 
+optimized_ngram_proplist_from_string(String, Lenth) ->
+    optimized_ngram_proplist(words:list(String), Lenth).
+
+optimized_ngram_lists_from_string(String, Lenth) ->
+    optimized_ngram_lists(words:list(String), Lenth).
+
 optimized_ngram_list_from_string(String, Lenth) ->
     optimized_ngram_list(words:list(String), Lenth).
 
+
+%%% ==========================================================================
+
+optimized_ngram_proplist(_List, 0) -> [];
+optimized_ngram_proplist(List, Lenth) ->
+    case optimized_strict_ngram(List, Lenth) of
+        [] ->
+            [{Lenth, []} | optimized_ngram_proplist(List, Lenth-1)];
+        L ->
+            [{Lenth, L} |optimized_ngram_proplist_tail(L, Lenth)]
+    end.
+
 %%% -------------------------------------------------------------------------
+
+optimized_ngram_proplist_tail(_InputList, 1) -> [];
+optimized_ngram_proplist_tail([H | T], Lenth) ->
+    Res = lists:append(optimized_strict_ngram(H, Lenth-1),
+        [ Ntail || [ _ | Ntail] <- T]),
+    [{Lenth-1, Res} | optimized_ngram_proplist_tail(Res, Lenth-1)].
+
+
+%%% ==========================================================================
+
+optimized_ngram_lists(_List, 0) -> [];
+optimized_ngram_lists(List, Lenth) ->
+    case optimized_strict_ngram(List, Lenth) of
+        [] ->
+            [[]| optimized_ngram_lists(List, Lenth-1)];
+        L ->
+            [L | optimized_ngram_lists_tail(L, Lenth)]
+    end.
+
+%%% -------------------------------------------------------------------------
+
+optimized_ngram_lists_tail( _InputList, 1) -> [];
+optimized_ngram_lists_tail([H | T], Lenth) ->
+    Res = lists:append(optimized_strict_ngram(H, Lenth-1),
+        [ Ntail || [ _ | Ntail] <- T]),
+    [Res | optimized_ngram_lists_tail(Res, Lenth-1)].
+
+%%% ==========================================================================
 
 %%% O(n)
 optimized_ngram_list_n(_List, 0) -> [];
@@ -488,6 +537,82 @@ test()->
     ),
     ?assertEqual([], optimized_strict_ngram([1, 2, 3, 4, 5, 6, 7], 8)),
     ?assertEqual([], optimized_strict_ngram([1, 2, 3, 4, 5, 6, 7], 9)),
+
+    %% NGRAM_LIST
+    %% --------------------------------------
+    ?assertEqual([[1],[2],[3]], ngram_list([1, 2, 3], 1)),
+    ?assertEqual([[1,2],[2,3],[1],[2],[3]], ngram_list([1, 2, 3], 2)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]], ngram_list([1, 2, 3], 3)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]], ngram_list([1, 2, 3], 4)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]], ngram_list([1, 2, 3], 5)),
+
+    %% NGRAM_PROPLIST
+    %% --------------------------------------
+    ?assertEqual([{1,[[1],[2],[3]]}],
+        ngram_proplist([1, 2, 3], 1)),
+    ?assertEqual([{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        ngram_proplist([1, 2, 3], 2)),
+    ?assertEqual([{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        ngram_proplist([1, 2, 3], 3)),
+    ?assertEqual([{4,[]},{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        ngram_proplist([1, 2, 3], 4)),
+    ?assertEqual([{5,[]},{4,[]},
+            {3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        ngram_proplist([1, 2, 3], 5)),
+
+    %% NGRAM_LISTS
+    %% --------------------------------------
+    ?assertEqual([[[1],[2],[3]]],
+        ngram_lists([1, 2, 3], 1)),
+    ?assertEqual([[[1,2],[2,3]],[[1],[2],[3]]],
+        ngram_lists([1, 2, 3], 2)),
+    ?assertEqual([[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        ngram_lists([1, 2, 3], 3)),
+    ?assertEqual([[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        ngram_lists([1, 2, 3], 4)),
+    ?assertEqual([[],[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        ngram_lists([1, 2, 3], 5)),
+
+    %% OPTIMIZED_NGRAM_LIST
+    %% --------------------------------------
+    ?assertEqual([[1],[2],[3]],
+        optimized_ngram_list([1, 2, 3], 1)),
+    ?assertEqual([[1,2],[2,3],[1],[2],[3]],
+        optimized_ngram_list([1, 2, 3], 2)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]],
+        optimized_ngram_list([1, 2, 3], 3)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]],
+        optimized_ngram_list([1, 2, 3], 4)),
+    ?assertEqual([[1,2,3],[1,2],[2,3],[1],[2],[3]],
+        optimized_ngram_list([1, 2, 3], 5)),
+
+    %% OPTIMIZED_ngram_proplist
+    %% --------------------------------------
+    ?assertEqual([{1,[[1],[2],[3]]}],
+        optimized_ngram_proplist([1, 2, 3], 1)),
+    ?assertEqual([{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        optimized_ngram_proplist([1, 2, 3], 2)),
+    ?assertEqual([{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        optimized_ngram_proplist([1, 2, 3], 3)),
+    ?assertEqual([{4,[]},{3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        optimized_ngram_proplist([1, 2, 3], 4)),
+    ?assertEqual([{5,[]},{4,[]},
+            {3,[[1,2,3]]},{2,[[1,2],[2,3]]},{1,[[1],[2],[3]]}],
+        optimized_ngram_proplist([1, 2, 3], 5)),
+
+    %% OPTIMIZED_NGRAM_LISTS
+    %% --------------------------------------
+    ?assertEqual([[[1],[2],[3]]],
+        optimized_ngram_lists([1, 2, 3], 1)),
+    ?assertEqual([[[1,2],[2,3]],[[1],[2],[3]]],
+        optimized_ngram_lists([1, 2, 3], 2)),
+    ?assertEqual([[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        optimized_ngram_lists([1, 2, 3], 3)),
+    ?assertEqual([[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        optimized_ngram_lists([1, 2, 3], 4)),
+    ?assertEqual([[],[],[[1,2,3]],[[1,2],[2,3]],[[1],[2],[3]]],
+        optimized_ngram_lists([1, 2, 3], 5)),
+
     ok.
 
 -define(TEST_SEQ_LEN, 100).
