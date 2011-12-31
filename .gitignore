@@ -1,6 +1,8 @@
-priv/data*
-priv/logs*
+*priv/data*
+*priv/logs*
+
 *ebin
+
 
 *~
 *.trace
