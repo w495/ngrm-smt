@@ -19,51 +19,63 @@
         ]
 ).
 
+-define(double(Module, Function, Ngram_List_1, Ngram_List_2),
+    lists:append([
+        Module:Function(Ngram_List_1, Ngram_List_2),
+        Module:Function(Ngram_List_2, Ngram_List_1)
+    ])).
+
+-define(double_offset(Module, Function, Ngram_List_1, Ngram_List_2, Offset),
+    lists:append([
+        Module:Function(Ngram_List_1, Ngram_List_2, Offset),
+        Module:Function(Ngram_List_2, Ngram_List_1, Offset)
+    ])).
+
 %%% ---------------------------------------------------------------------------
 
 zip_words(Snt_1, Snt_2)->
     List_1 = words:list(Snt_1),
     List_2 = words:list(Snt_2),
-    double(alists, zip, List_1 , List_2).
+    ?double(alists, zip, List_1 , List_2).
 
 %%% ---------------------------------------------------------------------------
 
 times_words(Snt_1, Snt_2)->
     List_1 = words:list(Snt_1),
     List_2 = words:list(Snt_2),
-    double(alists, times, List_1 , List_2).
+    ?double(alists, times, List_1 , List_2).
 
 tuple_sentences(Snt_1, Snt_2, Size)->
-    Ngram_List_1 = ngrams:ngram_list_from_string(Snt_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_from_string(Snt_2, Size),
+    Ngram_List_1 = ngrams:optimized_ngram_list_from_string(Snt_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_from_string(Snt_2, Size),
     {lists:append([Ngram_List_1, Ngram_List_2]),lists:append([Ngram_List_2, Ngram_List_1])}.
 
 
 %%% ---------------------------------------------------------------------------
 
 zip_sentences(Snt_1, Snt_2, Size)->
-    Ngram_List_1 = ngrams:ngram_list_from_string(Snt_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_from_string(Snt_2, Size),
-    double(alists, zip, Ngram_List_1, Ngram_List_2).
+    Ngram_List_1 = ngrams:optimized_ngram_list_from_string(Snt_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_from_string(Snt_2, Size),
+    ?double(alists, zip, Ngram_List_1, Ngram_List_2).
 
 %%% ---------------------------------------------------------------------------
 
 times_sentences(Snt_1, Snt_2, Size)->
-    Ngram_List_1 = ngrams:ngram_list_from_string(Snt_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_from_string(Snt_2, Size),
-    double(alists, times, Ngram_List_1, Ngram_List_2).
+    Ngram_List_1 = ngrams:optimized_ngram_list_from_string(Snt_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_from_string(Snt_2, Size),
+    ?double(alists, times, Ngram_List_1, Ngram_List_2).
 
 %%% ---------------------------------------------------------------------------
 
 times_diag_sentences(Snt_1, Snt_2, Size, Offset) ->
-    Ngram_List_1 = ngrams:ngram_list_from_string(Snt_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_from_string(Snt_2, Size),
-    double(alists, times_diag, Ngram_List_1, Ngram_List_2, Offset).
+    Ngram_List_1 = ngrams:optimized_ngram_list_from_string(Snt_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_from_string(Snt_2, Size),
+    ?double_offset(alists, times_diag, Ngram_List_1, Ngram_List_2, Offset).
 
 times_diago_sentences(Snt_1, Snt_2, Size, Offset) ->
-    Ngram_List_1 = ngrams:ngram_list_from_string(Snt_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_from_string(Snt_2, Size),
-    double(alists, times_diago, Ngram_List_1, Ngram_List_2, Offset).
+    Ngram_List_1 = ngrams:optimized_ngram_list_from_string(Snt_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_from_string(Snt_2, Size),
+    ?double_offset(alists, times_diago, Ngram_List_1, Ngram_List_2, Offset).
 
 %%% ---------------------------------------------------------------------------
 %%%
@@ -74,24 +86,13 @@ times_diago_sentences(Snt_1, Snt_2, Size, Offset) ->
 comb_sentences(Snt_1, Snt_2, Size, Offset)->
     List_1 = words:list(Snt_1),
     List_2 = words:list(Snt_2),
-    Ngram_List_1 = ngrams:ngram_list_e1(List_1, Size),
-    Ngram_List_2 = ngrams:ngram_list_e1(List_2, Size),
-    lists:append([double(alists, times, List_1 , List_2),
-        double(alists, times_diag, Ngram_List_1, Ngram_List_2, Offset)]).
-
-%%% ---------------------------------------------------------------------------
-
-double(Module, Function, Ngram_List_1, Ngram_List_2)->
+    Ngram_List_1 = ngrams:optimized_ngram_list_e1(List_1, Size),
+    Ngram_List_2 = ngrams:optimized_ngram_list_e1(List_2, Size),
     lists:append([
-        Module:Function(Ngram_List_1, Ngram_List_2),
-        Module:Function(Ngram_List_2, Ngram_List_1)
+        ?double(alists, times, List_1 , List_2),
+        ?double_offset(alists, times_diag, Ngram_List_1, Ngram_List_2, Offset)
     ]).
 
-double(Module, Function, Ngram_List_1, Ngram_List_2, Offset)->
-    lists:append([
-        Module:Function(Ngram_List_1, Ngram_List_2, Offset),
-        Module:Function(Ngram_List_2, Ngram_List_1, Offset)
-    ]).
 
 
 %%% ===========================================================================
