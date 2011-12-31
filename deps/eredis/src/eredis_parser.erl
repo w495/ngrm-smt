@@ -69,60 +69,34 @@ init() ->
 
 %% Parser in initial state, the data we receive will be the beginning
 %% of a response
-% parse(#pstate{state = undefined} = State, NewData) ->
-%     %% Look at the first byte to get the type of reply
-%     case NewData of
-%         %% Status
-%         <<$+, Data/binary>> ->
-%             return_result(parse_simple(Data), State, status_continue);
-% 
-%         %% Error
-%         <<$-, Data/binary>> ->
-%             return_error(parse_simple(Data), State, status_continue);
-% 
-%         %% Integer reply
-%         <<$:, Data/binary>> ->
-%             return_result(parse_simple(Data), State, status_continue);
-% 
-%         %% Multibulk
-%         <<$*, _Rest/binary>> ->
-%             return_result(parse_multibulk(NewData), State, multibulk_continue);
-% 
-%         %% Bulk
-%         <<$$, _Rest/binary>> ->
-%             return_result(parse_bulk(NewData), State, bulk_continue);
-% 
-%         _ ->
-%             %% TODO: Handle the case where we start parsing a new
-%             %% response, but cannot make any sense of it
-%             {error, unknown_response}
-%     end;
-
-parse(#pstate{state = undefined} = State, <<$+, Data/binary>>) ->
-    %% Status
-    return_result(parse_simple(Data), State, status_continue);
-
-parse(#pstate{state = undefined} = State, <<$-, Data/binary>>) ->
-    %% Error
-    return_error(parse_simple(Data), State, status_continue);
-
-parse(#pstate{state = undefined} = State, <<$:, Data/binary>>) ->
-    %% Integer reply
-    return_result(parse_simple(Data), State, status_continue);
-
-parse(#pstate{state = undefined} = State, <<$*, _/binary>> = NewData) ->
-    %% Multibulk
-    return_result(parse_multibulk(NewData), State, multibulk_continue);
-
-parse(#pstate{state = undefined} = State, <<$$, _/binary>> = NewData) ->
-    %% Bulk
-    return_result(parse_bulk(NewData), State, bulk_continue);
-
-parse(#pstate{state = undefined}, _NewData) ->
+parse(#pstate{state = undefined} = State, NewData) ->
     %% Look at the first byte to get the type of reply
-    %% TODO: Handle the case where we start parsing a new
-    %% response, but cannot make any sense of it
-    {error, unknown_response};
+    case NewData of
+        %% Status
+        <<$+, Data/binary>> ->
+            return_result(parse_simple(Data), State, status_continue);
+
+        %% Error
+        <<$-, Data/binary>> ->
+            return_error(parse_simple(Data), State, status_continue);
+
+        %% Integer reply
+        <<$:, Data/binary>> ->
+            return_result(parse_simple(Data), State, status_continue);
+
+        %% Multibulk
+        <<$*, _Rest/binary>> ->
+            return_result(parse_multibulk(NewData), State, multibulk_continue);
+
+        %% Bulk
+        <<$$, _Rest/binary>> ->
+            return_result(parse_bulk(NewData), State, bulk_continue);
+
+        _ ->
+            %% TODO: Handle the case where we start parsing a new
+            %% response, but cannot make any sense of it
+            {error, unknown_response}
+    end;
 
 %% The following clauses all match on different continuation states
 

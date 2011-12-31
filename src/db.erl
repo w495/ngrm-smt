@@ -65,12 +65,15 @@ save_bulk_index(Db, Data) ->
     %% Data = [Item]
     %% Item = [{En,Ru},Prob], --> hash: En, key: Prob, value: Ru
 
+    io:format("~n~n~n~n ==== Data ~p ~n~n~n~n", [Data]),
+
     Hmset_pipeline = [
-        ["HMSET", Phrase_1, Phrase_2, erlang:float_to_list(Prob)]
+        ["HSET", Phrase_1, Phrase_2, erlang:float_to_list(Prob)]
         || [{Phrase_1,Phrase_2},Prob] <- Data
     ],
-    io:format("~n~n~n~n ==== save_bulk_index ~n~n~n~n", []),
-    eredis:qp(Db, Hmset_pipeline),
+    io:format("~n~n~n~n ==== Hmset_pipeline ~p ~n~n~n~n", [Hmset_pipeline ]),
+    Res = eredis:qp(Db, Hmset_pipeline),
+    io:format("~n~n~n~n ==== save_bulk_index~p ~n~n~n~n", [Res]),
     [].
 
 

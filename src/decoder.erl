@@ -1,5 +1,7 @@
 -module(decoder).
 
+-compile(export_all).
+
 -include("../include/db.hrl").
 
 -include("../include/words.hrl").
@@ -83,6 +85,9 @@ to_pairs( [Word, Prob | Tail ]) ->
 try_to_translate(Ngram_) ->
     Ngram = words:list(Ngram_),
     {ok, Db} = eredis:start_link([{database, ?REVERSE_INDEX_DB}]),
+
+    io:format("~p", [eredis:q(Db, ["HGETALL", "t_ef"])]),
+
     {ok, List} = eredis:q(Db, ["HGETALL", Ngram]),
     io:format("~nNgram = ~p ~nList = ~p~n", [Ngram, List]),
     to_pairs(List).

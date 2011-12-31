@@ -10,7 +10,7 @@ main_test() ->
 main() ->
 
     % fprof:start()
-    %core:train(?CORPORA),
+    core:train(?CORPORA),
 
     %% core:train(?CORPORA),
 

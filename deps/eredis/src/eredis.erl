@@ -9,16 +9,14 @@
 -module(eredis).
 -author('knut.nesheim@wooga.com').
 
--define(LIST_ITEM_SEP, " ").
-
 -include("eredis.hrl").
 
 %% Default timeout for calls to the client gen_server
 %% Specified in http://www.erlang.org/doc/man/gen_server.html#call-3
 -define(TIMEOUT, 5000).
 
--export([start_link/0, stop/1, start_link/1, start_link/2, start_link/3, start_link/4,
-         start_link/5, q/2, q/3, qp/2, qp/3]).
+-export([start_link/0, start_link/1, start_link/2, start_link/3, start_link/4,
+         start_link/5, stop/1, q/2, q/3, qp/2, qp/3]).
 
 %% Exported for testing
 -export([create_multibulk/1]).
@@ -58,9 +56,8 @@ start_link(Args) ->
     ReconnectSleep = proplists:get_value(reconnect_sleep, Args, 100),
     start_link(Host, Port, Database, Password, ReconnectSleep).
 
-
-stop(Pid) ->
-    eredis_client:stop(Pid).
+stop(Client) ->
+    eredis_client:stop(Client).
 
 -spec q(Client::pid(), Command::iolist()) ->
                {ok, return_value()} | {error, Reason::binary() | no_connection}.
@@ -108,6 +105,7 @@ pipeline(Client, Pipeline, Timeout) ->
 create_multibulk(Args) ->
     ArgCount = [<<$*>>, integer_to_list(length(Args)), <<?NL>>],
     ArgsBin = lists:map(fun to_bulk/1, lists:map(fun to_binary/1, Args)),
+
     [ArgCount, ArgsBin].
 
 to_bulk(B) when is_binary(B) ->
@@ -117,25 +115,9 @@ to_bulk(B) when is_binary(B) ->
 %% term_to_binary/1. For floats, throws {cannot_store_floats, Float}
 %% as we do not want floats to be stored in Redis. Your future self
 %% will thank you for this.
-
-% to_binary([Head|_] = X) when (is_list(X) and is_list(Head))   ->
-%    Res = erlang:list_to_binary(string:join(X, ?LIST_ITEM_SEP)), io:format("~p, ~p~n", [X, erlang:bit_size(Res)]), Res;
-% to_binary(X) when is_list(X)    -> Res = list_to_binary(X), io:format("~p, ~p~n", [X, erlang:bit_size(Res)]), Res;
-
-to_binary([Head|_] = X) when (is_list(X) and is_list(Head))   ->
-   Res = erlang:list_to_binary(string:join(X, ?LIST_ITEM_SEP));
-
 to_binary(X) when is_list(X)    -> list_to_binary(X);
-
-
 to_binary(X) when is_atom(X)    -> list_to_binary(atom_to_list(X));
 to_binary(X) when is_binary(X)  -> X;
 to_binary(X) when is_integer(X) -> list_to_binary(integer_to_list(X));
 to_binary(X) when is_float(X)   -> throw({cannot_store_floats, X});
-
-% to_binary(X)                    -> Res = term_to_binary(X), io:format("~p --> ~p [~p]~n", [X, erlang:bit_size(Res), Res]), Res, Res.
-
 to_binary(X)                    -> term_to_binary(X).
-
-
-

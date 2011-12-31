@@ -23,6 +23,10 @@ train(Pairs)->
 
     train(Pairs, ?MODEL_ITER_STEPS),
 
+    Res = ets:select(mem_table:get_table(t_ef), [{{'$1','$2'},[{'>','$2',?MODEL_CROP_LIMIT}],['$$']}]),
+
+    ?LOG("~n~p~n", [Res]),
+
     mem_table:save_to_store(t_ef,
         ets:select(mem_table:get_table(t_ef),
             [{{'$1','$2'},[{'>','$2',?MODEL_CROP_LIMIT}],['$$']}])
