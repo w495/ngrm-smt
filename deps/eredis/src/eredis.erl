@@ -115,9 +115,18 @@ to_bulk(B) when is_binary(B) ->
 %% term_to_binary/1. For floats, throws {cannot_store_floats, Float}
 %% as we do not want floats to be stored in Redis. Your future self
 %% will thank you for this.
+
+% to_binary(X) when is_list(X)    -> list_to_binary(X);
+% to_binary(X) when is_atom(X)    -> list_to_binary(atom_to_list(X));
+% to_binary(X) when is_binary(X)  -> X;
+% to_binary(X) when is_integer(X) -> list_to_binary(integer_to_list(X));
+% to_binary(X) when is_float(X)   -> throw({cannot_store_floats, X});
+
+%%
+%% list_to_binary is faster then term_to_binary,
+%% but in our case list is not iolist in any case.
+%%
 to_binary(X) when is_list(X)    -> list_to_binary(X);
-to_binary(X) when is_atom(X)    -> list_to_binary(atom_to_list(X));
 to_binary(X) when is_binary(X)  -> X;
-to_binary(X) when is_integer(X) -> list_to_binary(integer_to_list(X));
 to_binary(X) when is_float(X)   -> throw({cannot_store_floats, X});
 to_binary(X)                    -> term_to_binary(X).

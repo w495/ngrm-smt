@@ -8,6 +8,7 @@
 -export([
             print_speed/2,
             print_speed/3,
+            print_speed/4,
             utime/0,
             test/0
         ]
@@ -32,6 +33,13 @@ print_speed(Name, Fun, X) ->
     iter_test(X, Fun),
     Stop = utime(),
     io:format("Test::: ~p (~p X ~s}~n", [Stop - Start, X, Name]).
+
+
+print_speed(Name, Fun, X, {mem, {Type, Den}}) ->
+    Start = utime(),
+    iter_test(X, Fun),
+    Stop = utime(),
+    io:format("Test: ~p Mem: ~p [~p X ~s]~n", [Stop - Start, erlang:memory(Type) / Den, X, Name]).
 
 
 % ===========================================================================
